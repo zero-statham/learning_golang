@@ -1,6 +1,9 @@
 package com_learnku
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type Stringer interface {
 	String() string
@@ -24,7 +27,12 @@ func (b Bitcoin) String() string {
 	return fmt.Sprintf("%d BTC", b)
 }
 
+var ErrlnsufficientFunds = errors.New("cannot withdraw, insufficient funds")
+
 func (w *Wallet) Withdraw(amount Bitcoin) error {
+	if amount > w.balance {
+		return ErrlnsufficientFunds
+	}
 	w.balance -= amount
 	return nil
 }
